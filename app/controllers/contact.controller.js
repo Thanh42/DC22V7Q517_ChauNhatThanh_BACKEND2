@@ -91,6 +91,15 @@ exports.deleteAll = (req, res) => {
   res.send({ message: "deleteAll handler" });
 };
 
-exports.findAllFavorite = (req, res) => {
-  res.send({ message: "findAllFavorite handler" });
+// Find all favorite contacts of a user
+exports.findAllFavorite = async (req, res, next) => {
+  try {
+    const contactService = new ContactServiceClass(MongoDB.client);
+    const documents = await contactService.findFavorite();
+    return res.send(documents);
+  } catch (error) {
+    return next(
+      new ApiError(500, "An error occurred while retrieving favorite contacts")
+    );
+  }
 };
