@@ -71,8 +71,20 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.delete = (req, res) => {
-  res.send({ message: "delete handler" });
+// Delete a contact with the specified id in the request
+exports.delete = async (req, res, next) => {
+  try {
+    const contactService = new ContactServiceClass(MongoDB.client);
+    const document = await contactService.delete(req.params.id);
+    if (!document) {
+      return next(new ApiError(404, "Contact not found"));
+    }
+    return res.send({ message: "Contact was deleted successfully" });
+  } catch (error) {
+    return next(
+      new ApiError(500, "Could not delete contact with id=${req.params.id}")
+    );
+  }
 };
 
 exports.deleteAll = (req, res) => {
