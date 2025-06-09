@@ -39,23 +39,21 @@ class ContactService {
   }
 
   async findById(id) {
+    const k = new ObjectId(id);
+    console.log("findById", k);
     return await this.Contact.findOne({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     });
   }
 
   async update(id, payload) {
-    const filter = {
-      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
-    };
-    console.log("filter", filter);
     const update = this.extractContactData(payload);
     const result = await this.Contact.findOneAndUpdate(
-      filter,
+      { _id: ObjectId.isValid(id) ? new ObjectId(id) : null },
       { $set: update },
       { returnDocument: "after" }
     );
-    return result.value; //return result;
+    return result;
   }
 
   async delete(id) {
